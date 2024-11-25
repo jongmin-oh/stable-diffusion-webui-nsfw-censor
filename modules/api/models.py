@@ -107,6 +107,8 @@ StableDiffusionTxt2ImgProcessingAPI = PydanticModelGenerator(
         {"key": "alwayson_scripts", "type": dict, "default": {}},
         {"key": "force_task_id", "type": str | None, "default": None},
         {"key": "infotext", "type": str | None, "default": None},
+        {"key": "enable_nsfw_detect", "type": bool, "default": False},
+        {"key": "nsfw_detect_model", "type": str, "default": "falcon"}
     ]
 ).generate_model()
 
@@ -126,6 +128,8 @@ StableDiffusionImg2ImgProcessingAPI = PydanticModelGenerator(
         {"key": "alwayson_scripts", "type": dict, "default": {}},
         {"key": "force_task_id", "type": str | None, "default": None},
         {"key": "infotext", "type": str | None, "default": None},
+        {"key": "enable_nsfw_detect", "type": bool, "default": False},
+        {"key": "nsfw_detect_model", "type": str, "default": "falcon"}
     ]
 ).generate_model()
 
@@ -133,11 +137,13 @@ class TextToImageResponse(BaseModel):
     images: list[str] | None = Field(default=None, title="Image", description="The generated image in base64 format.")
     parameters: dict
     info: str
+    nsfw_prob: float = Field(default=None, title="NSFW probabilities", description="The probabilities of NSFW detection for each image.")
 
 class ImageToImageResponse(BaseModel):
     images: list[str] | None = Field(default=None, title="Image", description="The generated image in base64 format.")
     parameters: dict
     info: str
+    nsfw_prob: float = Field(default=None, title="NSFW probabilities", description="The probabilities of NSFW detection for each image.")
 
 class ExtrasBaseRequest(BaseModel):
     resize_mode: Literal[0, 1] = Field(default=0, title="Resize Mode", description="Sets the resize mode: 0 to upscale by upscaling_resize amount, 1 to upscale up to upscaling_resize_h x upscaling_resize_w.")
